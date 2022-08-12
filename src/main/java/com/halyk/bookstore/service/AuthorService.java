@@ -14,5 +14,5 @@ public interface AuthorService {
 
     Long saveAuthor(AuthorRequest dto);
 
-    AuthorRepresentation getAuthorByName(String name, String last, String patron);
+    AuthorRepresentation getAuthorByName(String surname, String name, String patron);
 }

@@ -15,7 +15,7 @@ public class BookRepresentation {
     private int numberOfPages;
     private LocalDate releaseDate;
     private PublisherRequest publisher;
-    private Long countOfBooks;
+    private Long countOfSameBooks;
     private List<AuthorRepresentation> authors;
     private List<GenreRepresentation> genres;
 }

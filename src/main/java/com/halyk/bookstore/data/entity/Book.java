@@ -33,7 +33,7 @@ public class Book {
     @JoinColumn(name = "publisher_id")
     private Publisher publisher;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "order_id")
     private Order order;
 
@@ -42,9 +42,6 @@ public class Book {
 
     @Column(name = "release_date")
     private LocalDate releaseDate;
-
-    @Column(name = "count_books")
-    private Long countOfSameBooks;
 
     @ManyToMany(
             cascade = {
@@ -73,7 +70,6 @@ public class Book {
     private List<Genre> genres = new ArrayList<>();
 
 
-    //todo добавить в схему join table book_order
 
 }
 

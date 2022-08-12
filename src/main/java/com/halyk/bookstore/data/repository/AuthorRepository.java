@@ -12,5 +12,5 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
         return findById(id).orElseThrow(()->new EntityNotFoundException("Entity with id = " + id + " not found"));
     }
 
-    Author findAuthorByFirstNameAndLastNameAndPatronymicName(String name, String last, String patron);
+    Author findAuthorByLastNameAndFirstNameAndPatronymicName(String surname, String name, String patron);
 }

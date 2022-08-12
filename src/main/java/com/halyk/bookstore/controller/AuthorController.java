@@ -18,6 +18,7 @@ public class AuthorController {
 
     private final AuthorService service;
 
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<AuthorRepresentation> getAuthorById(@PathVariable Long id){
@@ -39,13 +40,13 @@ public class AuthorController {
         return ResponseEntity.ok(id);
     }
 
-    @GetMapping("/name/{name}/{surname}/{patronimyc}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<AuthorRepresentation> getAuthorByName(@PathVariable String name,
-                                                         @PathVariable String last,
-                                                         @PathVariable String patron){
-        AuthorRepresentation dto = service.getAuthorByName(name, last, patron);
-        return ResponseEntity.ok(dto);
+    @GetMapping("/fio/{surname}/{name}/{patronimyc}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")  //todo сделать его через боди
+    public ResponseEntity<AuthorRepresentation> getAuthorByName(@PathVariable String surname,
+                                                         @PathVariable String name,
+                                                         @PathVariable String patronimyc){
+        AuthorRepresentation authorByName = service.getAuthorByName(surname, name, patronimyc);
+        return ResponseEntity.ok(authorByName);
     }
 
 

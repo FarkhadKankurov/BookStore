@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS Book
     number_of_pages INTEGER NOT NULL COMMENT 'Колличество страниц',
     release_date DATE NOT NULL COMMENT 'Дата релиза',
     publisher_id INTEGER NOT NULL COMMENT 'Внешний ключ',
-    count_books INTEGER COMMENT 'Колличество экземпляров книг',
     order_id INTEGER COMMENT 'Внешний ключ'
 );
 
@@ -43,9 +42,8 @@ CREATE TABLE IF NOT EXISTS Genre
 CREATE TABLE IF NOT EXISTS Orders
 (
     id INTEGER COMMENT 'Уникальный идентификатор заказа' PRIMARY KEY AUTO_INCREMENT,
-    status VARCHAR(50) COMMENT 'Статус заказа',
-    create_dt TIMESTAMP COMMENT 'Время заказа'
-
+    status VARCHAR(50) NOT NULL COMMENT 'Статус заказа',
+    create_dt TIMESTAMP NOT NULL COMMENT 'Время заказа'
 );
 
 CREATE TABLE IF NOT EXISTS Book_Author (

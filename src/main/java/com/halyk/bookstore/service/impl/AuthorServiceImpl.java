@@ -46,8 +46,8 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional
     @Override
-    public AuthorRepresentation getAuthorByName(String name, String last, String patron) {
-        Author author = repository.findAuthorByFirstNameAndLastNameAndPatronymicName(name, last, patron);
+    public AuthorRepresentation getAuthorByName(String surname, String name, String patron) {
+        Author author = repository.findAuthorByLastNameAndFirstNameAndPatronymicName(surname, name, patron);
         return mapper.fromEntity(author);
     }
 }

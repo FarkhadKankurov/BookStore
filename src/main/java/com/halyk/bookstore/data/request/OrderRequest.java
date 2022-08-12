@@ -7,5 +7,5 @@ import java.util.List;
 
 @Data
 public class OrderRequest {
-    private List<Book> list;
+    private List<Long> list;
 }

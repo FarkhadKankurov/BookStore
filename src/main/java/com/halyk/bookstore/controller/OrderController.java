@@ -32,7 +32,7 @@ public class OrderController {
         return ResponseEntity.ok(list);
     }
 
-    @PostMapping("/save")
+    @PostMapping("/order")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Long> saveOrder(@RequestBody OrderRequest dto){
         long id = service.saveOrder(dto);
