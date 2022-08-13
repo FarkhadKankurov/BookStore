@@ -1,10 +1,8 @@
 package com.halyk.bookstore.data.repository;
 
 import com.halyk.bookstore.data.entity.Book;
-import com.halyk.bookstore.data.entity.Publisher;
 import com.halyk.bookstore.exception.EntityNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

@@ -2,9 +2,9 @@ package com.halyk.bookstore.controller;
 
 import com.halyk.bookstore.data.entity.user.User;
 import com.halyk.bookstore.data.repository.user.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityExistsException;
 import javax.transaction.Transactional;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 public class RegistrationController {
@@ -39,6 +38,28 @@ public class RegistrationController {
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRole("ROLE_USER");
         user.setIsBlocked(Boolean.FALSE);
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/api/ublockuser/{login}")
+    public ResponseEntity<?> UnblockUser(@Validated @PathVariable String login) {
+        User user = userRepository.findUserByUsername(login);
+        user.setRole("ROLE_USER");
+//        user.setIsBlocked(Boolean.FALSE);
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/api/blockuser/{login}")
+    public ResponseEntity<?> blockUser(@Validated @PathVariable String login) {
+        User user = userRepository.findUserByUsername(login);
+        user.setRole("ROLE_USERBLOCKED");
+//        user.setIsBlocked(Boolean.TRUE);
         userRepository.save(user);
         return ResponseEntity.ok().build();
     }

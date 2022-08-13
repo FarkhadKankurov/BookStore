@@ -1,7 +1,5 @@
 package com.halyk.bookstore.data.representation;
 
-import com.halyk.bookstore.data.request.AuthorRequest;
-import com.halyk.bookstore.data.request.GenreRequest;
 import com.halyk.bookstore.data.request.PublisherRequest;
 import lombok.Data;
 
@@ -15,7 +13,6 @@ public class BookRepresentation {
     private int numberOfPages;
     private LocalDate releaseDate;
     private PublisherRequest publisher;
-    private Long countOfSameBooks;
     private List<AuthorRepresentation> authors;
     private List<GenreRepresentation> genres;
 }

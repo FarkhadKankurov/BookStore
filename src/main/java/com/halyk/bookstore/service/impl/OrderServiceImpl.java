@@ -3,6 +3,7 @@ package com.halyk.bookstore.service.impl;
 import com.halyk.bookstore.data.entity.Book;
 import com.halyk.bookstore.data.enums.OrderStatusEnum;
 import com.halyk.bookstore.data.repository.BookRepository;
+import com.halyk.bookstore.data.repository.user.UserRepository;
 import com.halyk.bookstore.data.representation.OrderRepresentation;
 import com.halyk.bookstore.data.request.OrderRequest;
 import com.halyk.bookstore.data.entity.Order;
@@ -12,8 +13,6 @@ import com.halyk.bookstore.exception.BookReservedAnotherOrder;
 import com.halyk.bookstore.exception.ExceedTotalCost;
 import com.halyk.bookstore.service.OrderService;
 import lombok.Data;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -32,6 +31,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper mapper;
 
     private final BookRepository bookRepository;
+
+    private final UserRepository userRepository;
 
 //    private final SecurityContextHolder
 
@@ -52,12 +53,16 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public long saveOrder(OrderRequest dto) {
-
-
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if(principal instanceof UserDetails) {
-            String username = ((UserDetails)principal).getUsername();
-        }//todo добавить в userRepository метод findUserByUserName, так мы можем посмотреть его статус если isBlocked тогда кидаю ошибку что он заблокирован
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        User user;
+//        if(principal instanceof UserDetails) {
+//            String username = ((UserDetails) principal).getUsername();
+//            user = userRepository.findUserByUsername(username);
+//            if (user.getIsBlocked()){
+//                throw new Exception();
+//
+//            }
+//        }
         int totalSum = 0;
         Order order = new Order();
         order.setStatus(OrderStatusEnum.CREATED);
@@ -96,7 +101,6 @@ public class OrderServiceImpl implements OrderService {
         //todo добавить такую же логику как и в сейф, если чувак удаляет книгу нужно найти эту книгу и засесить в поле
         // order_id NULL
 
-        //todo удалить countOftheSameBooks
     }
 
     @Transactional
