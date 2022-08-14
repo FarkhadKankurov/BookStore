@@ -69,27 +69,11 @@ public class OrderServiceImpl implements OrderService {
 //            }
 //        }
 
-        int totalSum = 0;
         Order order = new Order();
         order.setStatus(OrderStatusEnum.CREATED);
         Order save = orderRepository.save(order);
 
-        List<Book> books = bookRepository.findByIdIn(dto.getList());
-        List<String> exists = new ArrayList<>();
-        for (Book book : books) {
-            totalSum += book.getCost();
-            if (totalSum > 10000)
-                throw new ExceedTotalCost("Общая сумма: " + totalSum + ", превышает 10000.");
-            if (Objects.nonNull(book.getOrder())) {
-                exists.add(book.getName());
-            } else {
-                book.setOrder(save);
-            }
-        }
-        if (!exists.isEmpty()) {
-            String collect = String.join(", ", exists);
-            throw new BookReservedAnotherOrder("Книги: " + collect + ", зарезервированы в другом заказе");
-        }
+        List<Book> books = checkTotalSumAndReservedBook(dto.getList(), save);
         bookRepository.saveAll(books);
         return save.getId();
     }
@@ -97,17 +81,34 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public void updateOrder(OrderRequest dto, Long id) {
-        //todo посчитать totalSum 10000 (подумай)
-
-        //todo сделать как в сейв методе учет зарезервированных книг
+        int totalSum = 0;
+        List<String> exists = new ArrayList<>();
         Order order = orderRepository.findByIdOrThrowException(id);
+
         List<Long> booksIDInEntity = order.getBooks().stream().map(Book::getId).toList();
         List<Long> booksIDInRequest = dto.getList();
-        List<Long> booksDelete = deleteNonExists(booksIDInEntity, booksIDInRequest);
-        List<Long> booksUpdate = addNonExists(booksIDInRequest, booksIDInEntity);
+
+        List<Book> books = bookRepository.findByIdIn(booksIDInRequest);
+        for (Book book : books) {                                       //проверяем totalSum с Request
+            totalSum += book.getCost();
+            if (totalSum > 10000)
+                throw new ExceedTotalCost("Общая сумма: " + totalSum + ", превышает 10000.");
+        }
+
+        List<Long> booksDelete = deleteNonExistsAndAddNonExists(booksIDInEntity, booksIDInRequest);
+        List<Long> booksUpdate = deleteNonExistsAndAddNonExists(booksIDInRequest, booksIDInEntity);
+
+        List<Book> booksCheckReserved = bookRepository.findByIdIn(booksUpdate);
+        for (Book book : booksCheckReserved) {
+            if (Objects.nonNull(book.getOrder())) {
+                exists.add(book.getName());
+            }                                                           //проверяем не зарезервирована ли книга
+        }if (!exists.isEmpty()) {
+            String collect = String.join(", ", exists);
+            throw new BookReservedAnotherOrder("Книги: " + collect + ", зарезервированы в другом заказе");
+        }
 
         deleteOrderFromBooks(booksDelete);
-
         for (Long aLong : booksUpdate) {
             Book bookUpd = bookRepository.findByIdOrThrowException(aLong);
             bookUpd.setOrder(order);
@@ -134,9 +135,10 @@ public class OrderServiceImpl implements OrderService {
             case PROCESS -> order.setStatus(PROCESS);
             case EXECUTED -> {
                 order.setStatus(EXECUTED);
-                for (Long aLong : booksIDInEntity) {
-                    bookRepository.deleteBookById(aLong); //todo сделать метод для листа deleteAllbookById(List<Long> list)
-                }
+//                for (Long aLong : booksIDInEntity) {
+//                    bookRepository.deleteBookById(aLong); // сделать метод для листа deleteAllbookById(List<Long> list)
+//                }
+                bookRepository.deleteAllById(booksIDInEntity); //todo проверить
             }
             case CANCELED -> {
                 order.setStatus(CANCELED);
@@ -155,25 +157,38 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private  List<Long> deleteNonExists(List<Long> bookIdOfExistOrder, List<Long> updatedList) {
+    private  List<Long> deleteNonExistsAndAddNonExists(List<Long> bookIdOfExistOrder, List<Long> updatedList) {
         List<Long> result = new ArrayList<>();
 
         for (Long aLong : bookIdOfExistOrder) {
             if (!updatedList.contains(aLong)) {
                 result.add(aLong);
-            }   //todo создать из них один метод
+            }
         }
         return result;
     }
 
-    private  List<Long> addNonExists(List<Long> updatedList, List<Long> bookIdOfExistOrder){
-        List<Long> resultList = new ArrayList<>();
+    private List<Book> checkTotalSumAndReservedBook(List<Long> request, Order save){
+        int totalSum = 0;
+        List<Book> books = bookRepository.findByIdIn(request);
+        List<String> exists = new ArrayList<>();
 
-        for(int i = 0; i < bookIdOfExistOrder.size(); i++){
-            if (!updatedList.contains(bookIdOfExistOrder.get(i))) {
-                resultList.add(bookIdOfExistOrder.get(i));
+        for (Book book : books) {
+            totalSum += book.getCost();
+            if (totalSum > 10000)
+                throw new ExceedTotalCost("Общая сумма: " + totalSum + ", превышает 10000.");
+            if (Objects.nonNull(book.getOrder())) {
+                exists.add(book.getName());
+            } else {
+                book.setOrder(save);
             }
         }
-        return resultList;
+        if (!exists.isEmpty()) {
+            String collect = String.join(", ", exists);
+            throw new BookReservedAnotherOrder("Книги: " + collect + ", зарезервированы в другом заказе");
+        }
+        return(books);
+
     }
+
 }

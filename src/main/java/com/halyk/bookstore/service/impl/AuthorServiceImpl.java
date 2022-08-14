@@ -1,5 +1,6 @@
 package com.halyk.bookstore.service.impl;
 
+import com.halyk.bookstore.data.repository.BookRepository;
 import com.halyk.bookstore.data.representation.AuthorRepresentation;
 import com.halyk.bookstore.data.request.AuthorRequest;
 import com.halyk.bookstore.data.entity.Author;
@@ -31,7 +32,8 @@ import java.util.stream.Collectors;
 @Data
 public class AuthorServiceImpl implements AuthorService {
 
-    private final AuthorRepository repository;
+    private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
 
     private final AuthorMapper mapper;
 
@@ -74,14 +76,14 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @Override
     public AuthorRepresentation getAuthorById(Long id) {
-        Author author = repository.findByIdOrThrowException(id);
+        Author author = authorRepository.findByIdOrThrowException(id);
         return mapper.fromEntity(author);
     }
 
     @Transactional
     @Override
     public List<AuthorRepresentation> getAllAuthor() {
-        List<Author> list = repository.findAll();
+        List<Author> list = authorRepository.findAll();
         return list.stream().map(mapper::fromEntity).collect(Collectors.toList());
     }
 
@@ -89,7 +91,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Long saveAuthor(AuthorRequest dto) {
         Author author = mapper.toEntity(dto);
-        Author save = repository.save(author);
+        Author save = authorRepository.save(author);
         return save.getId();
     }
 
@@ -105,7 +107,16 @@ public class AuthorServiceImpl implements AuthorService {
         return result;
     }
 
+    @Override
+    public Long delete(Long id) {
+        return authorRepository.deleteAuthorById(id);
+    }
 
+    @Override
+    public List<AuthorRepresentation> getAuthorsByGenreName(String genreName) {
+//        return authorRepository.findAuthorsByGenresEquals(genreName);
+        return authorRepository.findAllByGenre(genreName);
+    }
 
 
 }

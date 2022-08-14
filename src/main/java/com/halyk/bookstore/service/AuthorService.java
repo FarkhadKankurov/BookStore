@@ -15,4 +15,8 @@ public interface AuthorService {
     Long saveAuthor(AuthorRequest dto);
 
     List<AuthorRepresentation> getAuthorByName(AuthorRequest dto);
+
+    Long delete(Long id);
+
+    List<AuthorRepresentation> getAuthorsByGenreName(String genreName);
 }

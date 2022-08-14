@@ -33,6 +33,20 @@ public class AuthorController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("/fio")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<AuthorRepresentation>> getAuthorByName(@RequestBody AuthorRequest dto){
+        List<AuthorRepresentation> authorByName = service.getAuthorByName(dto);
+        return ResponseEntity.ok(authorByName);
+    }
+
+    @GetMapping("/genre/{genrename}")
+    private List<AuthorRepresentation> getAuthorByGenreName(@PathVariable("genreName") String genreName)
+    {
+        return service.getAuthorsByGenreName(genreName);
+
+    }
+
     @PostMapping("/save")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Long> saveAuthor(@RequestBody AuthorRequest dto){
@@ -40,12 +54,14 @@ public class AuthorController {
         return ResponseEntity.ok(id);
     }
 
-    @GetMapping("/fio")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")  //todo сделать его через боди      //todo сделать как у Рата в гите поиск по ФИО
-    public ResponseEntity<List<AuthorRepresentation>> getAuthorByName(@RequestBody AuthorRequest dto){
-        List<AuthorRepresentation> authorByName = service.getAuthorByName(dto);
-        return ResponseEntity.ok(authorByName);
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Long> deleteAuthor(@PathVariable Long id){
+        Long count = service.delete(id);
+        return ResponseEntity.ok(count);
     }
+
+
 
 
 
