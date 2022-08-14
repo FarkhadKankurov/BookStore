@@ -1,5 +1,6 @@
 package com.halyk.bookstore.controller;
 
+import com.halyk.bookstore.data.enums.OrderStatusEnum;
 import com.halyk.bookstore.data.representation.OrderRepresentation;
 import com.halyk.bookstore.data.request.OrderRequest;
 import com.halyk.bookstore.service.OrderService;
@@ -46,10 +47,10 @@ public class OrderController {
         return ResponseEntity.ok("Success");
     }
 
-    @PutMapping("/changeStatus/{id}")
+    @PutMapping("/changeStatus/{id}/{status}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> changeOrderStatus(@PathVariable Long id){
-        service.updateOrderStatus(id);
+    public ResponseEntity<String> changeOrderStatus(@PathVariable Long id, @PathVariable OrderStatusEnum status){
+        service.updateOrderStatus(id, status);
         return ResponseEntity.ok("Success");
     }
 

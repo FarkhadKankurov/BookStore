@@ -9,9 +9,23 @@ import com.halyk.bookstore.service.AuthorService;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+
+
 
 @Service
 @Data
@@ -20,6 +34,42 @@ public class AuthorServiceImpl implements AuthorService {
     private final AuthorRepository repository;
 
     private final AuthorMapper mapper;
+
+    private CriteriaBuilder builder;
+    private Map<String, Supplier<?>> map;
+    private final EntityManager em;
+
+
+    private void initMap(AuthorRequest dto) {
+        if (map == null)
+            map = new HashMap<>();
+
+        map.put("firstName", dto::getFirstName);
+        map.put("lastName", dto::getLastName);
+        map.put("patronymicName", dto::getPatronymicName);
+    }
+
+    private CriteriaQuery<Author> buildCriteria(AuthorRequest dto) {
+        builder = em.getCriteriaBuilder();
+        CriteriaQuery<Author> criteria = builder.createQuery(Author.class);
+        Root<Author> authorRoot = criteria.from(Author.class);
+        initMap(dto);
+        List<Predicate> predicatesList = map.entrySet().stream()
+                .filter(pair -> pair.getValue().get() != null)
+                .map(pair -> builder.equal(authorRoot.get(pair.getKey()), pair.getValue().get()))
+                .toList();
+        Predicate[] predicates = new Predicate[predicatesList.size()];
+        predicatesList.toArray(predicates);
+        criteria.where(predicates);
+        return criteria;
+    }
+//
+////    @Override
+    public List<Author> allByTerms(AuthorRequest dto) {
+        CriteriaQuery<Author> criteria = buildCriteria(dto);
+        TypedQuery<Author> query = em.createQuery(criteria);
+        return query.getResultList();
+    }
 
     @Transactional
     @Override
@@ -46,8 +96,16 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional
     @Override
-    public AuthorRepresentation getAuthorByName(String surname, String name, String patron) {
-        Author author = repository.findAuthorByLastNameAndFirstNameAndPatronymicName(surname, name, patron);
-        return mapper.fromEntity(author);
+    public List<AuthorRepresentation> getAuthorByName(AuthorRequest dto) {
+        List<Author> list = allByTerms(dto);
+        List<AuthorRepresentation> result = new ArrayList<>();
+        for (Author author : list) {
+            result.add(mapper.fromEntity(author));
+        }
+        return result;
     }
+
+
+
+
 }

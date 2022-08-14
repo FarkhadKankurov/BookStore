@@ -24,7 +24,7 @@ public class Order {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private OrderStatusEnum status;
+    private OrderStatusEnum status = OrderStatusEnum.CREATED;
 
     @CreationTimestamp
     @Column(name = "create_dt")

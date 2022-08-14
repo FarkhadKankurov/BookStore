@@ -1,5 +1,6 @@
 package com.halyk.bookstore.service;
 
+import com.halyk.bookstore.data.enums.OrderStatusEnum;
 import com.halyk.bookstore.data.representation.OrderRepresentation;
 import com.halyk.bookstore.data.request.OrderRequest;
 
@@ -16,5 +17,5 @@ public interface OrderService {
 
     Long delete(Long id);
 
-    void updateOrderStatus(Long id);
+    void updateOrderStatus(Long id, OrderStatusEnum status);
 }

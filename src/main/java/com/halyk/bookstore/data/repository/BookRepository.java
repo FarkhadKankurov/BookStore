@@ -21,6 +21,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
 //    List<Book> findBookByNameAndPublisher(String bookName, String )
 
-    List<Book> findBookByNameLike(String namePart); //todo попробовать сделать через этот метод или сделать через аннотацию query
+    List<Book> findBookByNameLike(String namePart); //todo попробовать сделать через этот метод или сделать через аннотацию query (это про поиск по части слова)
     //todo добавить Representation для других
 }

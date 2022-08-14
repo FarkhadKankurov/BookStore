@@ -40,12 +40,10 @@ public class AuthorController {
         return ResponseEntity.ok(id);
     }
 
-    @GetMapping("/fio/{surname}/{name}/{patronimyc}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")  //todo сделать его через боди
-    public ResponseEntity<AuthorRepresentation> getAuthorByName(@PathVariable String surname,
-                                                         @PathVariable String name,
-                                                         @PathVariable String patronimyc){
-        AuthorRepresentation authorByName = service.getAuthorByName(surname, name, patronimyc);
+    @GetMapping("/fio")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")  //todo сделать его через боди      //todo сделать как у Рата в гите поиск по ФИО
+    public ResponseEntity<List<AuthorRepresentation>> getAuthorByName(@RequestBody AuthorRequest dto){
+        List<AuthorRepresentation> authorByName = service.getAuthorByName(dto);
         return ResponseEntity.ok(authorByName);
     }
 
