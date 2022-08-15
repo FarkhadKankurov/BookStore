@@ -1,11 +1,13 @@
 package com.halyk.bookstore.service.impl;
 
+import com.halyk.bookstore.data.entity.Book;
 import com.halyk.bookstore.data.repository.BookRepository;
 import com.halyk.bookstore.data.representation.AuthorRepresentation;
 import com.halyk.bookstore.data.request.AuthorRequest;
 import com.halyk.bookstore.data.entity.Author;
 import com.halyk.bookstore.data.mapper.AuthorMapper;
 import com.halyk.bookstore.data.repository.AuthorRepository;
+import com.halyk.bookstore.data.request.BookRequest;
 import com.halyk.bookstore.service.AuthorService;
 import lombok.Data;
 import org.springframework.stereotype.Service;
@@ -107,15 +109,25 @@ public class AuthorServiceImpl implements AuthorService {
         return result;
     }
 
+    @Transactional
     @Override
     public Long delete(Long id) {
         return authorRepository.deleteAuthorById(id);
     }
 
+    @Transactional
     @Override
     public List<AuthorRepresentation> getAuthorsByGenreName(String genreName) {
-//        return authorRepository.findAuthorsByGenresEquals(genreName);
+//        return authorRepository.findAuthorsByGenresEquals(genreName);  //todo проверить почему не работает
         return authorRepository.findAllByGenre(genreName);
+    }
+
+    @Transactional
+    @Override
+    public void updateAuthor(AuthorRequest dto, Long id) {
+        Author author = authorRepository.findByIdOrThrowException(id);
+        mapper.updateEntity(author, dto);
+        authorRepository.save(author);
     }
 
 

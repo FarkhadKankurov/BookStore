@@ -1,6 +1,7 @@
 package com.halyk.bookstore.controller;
 
 import com.halyk.bookstore.data.representation.GenreRepresentation;
+import com.halyk.bookstore.data.request.AuthorRequest;
 import com.halyk.bookstore.data.request.GenreRequest;
 import com.halyk.bookstore.service.GenreService;
 import lombok.Data;
@@ -50,6 +51,13 @@ public class GenreController {
     public ResponseEntity<Long> deleteGenre(@PathVariable Long id){
         Long count = service.delete(id);
         return ResponseEntity.ok(count);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> updateBook(@PathVariable Long id, @RequestBody GenreRequest dto){
+        service.updateGenre(dto, id);
+        return ResponseEntity.ok("Success");
     }
 
     

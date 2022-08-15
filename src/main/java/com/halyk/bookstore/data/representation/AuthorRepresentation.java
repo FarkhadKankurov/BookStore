@@ -13,6 +13,4 @@ public class AuthorRepresentation {
     private String firstName;
     private String patronymicName;
     private LocalDate dateOfBirth;
-    private List<BookRepresentation> books;
-    private List<GenreRepresentation> genres;
 }

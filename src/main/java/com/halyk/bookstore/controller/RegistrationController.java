@@ -2,6 +2,7 @@ package com.halyk.bookstore.controller;
 
 import com.halyk.bookstore.data.entity.user.User;
 import com.halyk.bookstore.data.repository.user.UserRepository;
+import com.halyk.bookstore.service.user.details.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,16 +18,19 @@ import java.util.Optional;
 public class RegistrationController {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+    private final UserDetailsServiceImpl userService;
 
     @Autowired
-    public RegistrationController(UserRepository userRepository, PasswordEncoder encoder) {
+    public RegistrationController(UserRepository userRepository, PasswordEncoder encoder, UserDetailsServiceImpl userService) {
         this.userRepository = userRepository;
         this.encoder = encoder;
+        this.userService = userService;
     }
 
-    @GetMapping("/user")
-    public User getUser(){
-        return userRepository.findById(1L).get();
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/api/user/{id}")
+    public Optional<User> getUser(@PathVariable Long id){
+        return userRepository.findById(id);
     }
 
     @Transactional
@@ -48,7 +52,7 @@ public class RegistrationController {
     public ResponseEntity<?> UnblockUser(@Validated @PathVariable String login) {
         User user = userRepository.findUserByUsername(login);
         user.setRole("ROLE_USER");
-//        user.setIsBlocked(Boolean.FALSE);
+        user.setIsBlocked(Boolean.FALSE);
         userRepository.save(user);
         return ResponseEntity.ok().build();
     }
@@ -59,8 +63,24 @@ public class RegistrationController {
     public ResponseEntity<?> blockUser(@Validated @PathVariable String login) {
         User user = userRepository.findUserByUsername(login);
         user.setRole("ROLE_USERBLOCKED");
-//        user.setIsBlocked(Boolean.TRUE);
+        user.setIsBlocked(Boolean.TRUE);
         userRepository.save(user);
         return ResponseEntity.ok().build();
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PutMapping("api/{id}")
+    public String updateUser(@PathVariable Long id, @RequestBody User user){
+        userService.updateUser(id, user);
+        return "Success";
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("api/{id}")
+    public String deleteUser(@PathVariable Long id){
+        userService.deleteUser(id);
+        return "Success";
     }
 }

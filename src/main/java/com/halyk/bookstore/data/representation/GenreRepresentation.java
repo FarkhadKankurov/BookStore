@@ -9,6 +9,4 @@ import java.util.List;
 @Data
 public class GenreRepresentation {
     private String genreName;
-    private List<BookRepresentation> books;
-    private List<AuthorRepresentation> authors;
 }

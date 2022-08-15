@@ -1,5 +1,6 @@
 package com.halyk.bookstore.service.impl;
 
+import com.halyk.bookstore.data.entity.Book;
 import com.halyk.bookstore.data.representation.GenreRepresentation;
 import com.halyk.bookstore.data.request.GenreRequest;
 import com.halyk.bookstore.data.entity.Genre;
@@ -54,6 +55,14 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public Long delete(Long id) {
         return repository.deleteGenreById(id);
+    }
+
+    @Transactional
+    @Override
+    public void updateGenre(GenreRequest dto, Long id) {
+        Genre genre = repository.findByIdOrThrowException(id);
+        mapper.updateEntity(genre, dto);
+        repository.save(genre);
     }
 
 

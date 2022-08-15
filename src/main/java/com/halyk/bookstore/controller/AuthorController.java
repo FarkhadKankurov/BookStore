@@ -2,6 +2,7 @@ package com.halyk.bookstore.controller;
 
 import com.halyk.bookstore.data.representation.AuthorRepresentation;
 import com.halyk.bookstore.data.request.AuthorRequest;
+import com.halyk.bookstore.data.request.BookRequest;
 import com.halyk.bookstore.service.AuthorService;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,13 @@ public class AuthorController {
 
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> updateBook(@PathVariable Long id, @RequestBody AuthorRequest dto){
+        service.updateAuthor(dto, id);
+        return ResponseEntity.ok("Success");
+    }
+
     @PostMapping("/save")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Long> saveAuthor(@RequestBody AuthorRequest dto){
@@ -60,11 +68,6 @@ public class AuthorController {
         Long count = service.delete(id);
         return ResponseEntity.ok(count);
     }
-
-
-
-
-
 
 
 }

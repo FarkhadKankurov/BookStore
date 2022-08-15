@@ -4,6 +4,7 @@ import com.halyk.bookstore.data.representation.AuthorRepresentation;
 import com.halyk.bookstore.data.request.AuthorRequest;
 import com.halyk.bookstore.data.entity.Author;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
 
 
@@ -12,5 +13,7 @@ import org.mapstruct.NullValueCheckStrategy;
 public interface AuthorMapper {
     Author toEntity(AuthorRequest dto);
     AuthorRepresentation fromEntity(Author author);
+
+    void updateEntity(@MappingTarget Author author, AuthorRequest dto);
 //    List<AuthorRepresentation> fromEntityList(List<Author> authorList); //todo додедлать правильно
 }
