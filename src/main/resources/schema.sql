@@ -59,6 +59,17 @@ CREATE TABLE IF NOT EXISTS Book_Genre (
     PRIMARY KEY (book_id, genre_id)
 );
 
+CREATE TABLE IF NOT EXISTS Author_Genre (
+    author_id INTEGER NOT NULL COMMENT 'Уникальный идентификатор автора',
+    genre_id INTEGER NOT NULL COMMENT 'Уникальный идентификатор жанра',
+    PRIMARY KEY (author_id, genre_id)
+);
+
+ALTER TABLE Author_Genre
+    ADD FOREIGN KEY (author_id) REFERENCES Author (id);
+ALTER TABLE Author_Genre
+    ADD FOREIGN KEY (genre_id) REFERENCES Genre (id);
+
 ALTER TABLE Book
     ADD FOREIGN KEY (publisher_id) REFERENCES Publisher (id);
 ALTER TABLE Book

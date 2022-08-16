@@ -1,7 +1,9 @@
 package com.halyk.bookstore.service.impl;
 
 import com.halyk.bookstore.data.repository.BookRepository;
+import com.halyk.bookstore.data.repository.GenreRepository;
 import com.halyk.bookstore.data.representation.AuthorRepresentation;
+import com.halyk.bookstore.data.representation.author_representation.AuthorRepresentationForGenreName;
 import com.halyk.bookstore.data.request.AuthorRequest;
 import com.halyk.bookstore.data.entity.Author;
 import com.halyk.bookstore.data.mapper.AuthorMapper;
@@ -17,10 +19,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -32,6 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
+    private final GenreRepository genreRepository;
 
     private final AuthorMapper mapper;
 
@@ -109,12 +109,6 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.deleteAuthorById(id);
     }
 
-    @Transactional
-    @Override
-    public List<AuthorRepresentation> getAuthorsByGenreName(String genreName) {
-//        return authorRepository.findAuthorsByGenresEquals(genreName);  //todo проверить почему не работает
-        return authorRepository.findAllByGenre(genreName);
-    }
 
     @Transactional
     @Override
@@ -123,4 +117,10 @@ public class AuthorServiceImpl implements AuthorService {
         mapper.updateEntity(author, dto);
         authorRepository.save(author);
     }
+
+    @Override
+    public List<AuthorRepresentationForGenreName> findAuthorsByGenreList(List<String> genreList) {
+        return authorRepository.getAuthorByGenreList(genreList).stream().map(mapper::fromEntityGenre).toList();
+    }
 }
+ 

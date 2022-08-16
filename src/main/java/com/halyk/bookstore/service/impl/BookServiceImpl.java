@@ -10,6 +10,7 @@ import lombok.Data;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,15 +18,14 @@ import java.util.stream.Collectors;
 @Data
 public class BookServiceImpl implements BookService {
 
-
-    private final BookRepository repository;
+    private final BookRepository bookRepository;
 
     private final BookMapper mapper;
 
     @Transactional
     @Override
     public BookRepresentation getBookById(Long id) {
-        Book book = repository.findByIdOrThrowException(id);
+        Book book = bookRepository.findByIdOrThrowException(id);
         return mapper.fromEntity(book);
 
     }
@@ -34,42 +34,53 @@ public class BookServiceImpl implements BookService {
     @Override
     public Long saveBook(BookRequest dto) {
         Book book = mapper.toEntity(dto);
-        Book save = repository.save(book);
+        Book save = bookRepository.save(book);
         return save.getId();
     }
 
     @Transactional
     @Override
     public void updateBook(BookRequest bookdto, Long id) {
-        Book book = repository.findByIdOrThrowException(id);
+        Book book = bookRepository.findByIdOrThrowException(id);
         mapper.updateEntity(book, bookdto);
-        repository.save(book);
+        bookRepository.save(book);
     }
 
     @Transactional
     @Override
     public Long delete(Long id) {
-        return repository.deleteBookById(id);
+        return bookRepository.deleteBookById(id);
     }
 
     @Transactional
     @Override
     public List<BookRepresentation> getAllBook() {
-        List<Book> allBook = repository.findAll();
+        List<Book> allBook = bookRepository.findAll();
         return allBook.stream().map(mapper::fromEntity).collect(Collectors.toList());
     }
 
     @Transactional
     @Override
     public List<BookRepresentation> getBookByName(String name) {
-        List<Book> allBook = repository.findBookByName(name);
+        List<Book> allBook = bookRepository.findBookByName(name);
         return allBook.stream().map(mapper::fromEntity).collect(Collectors.toList());
     }
 
     @Transactional
     @Override
     public List<BookRepresentation> getBookByPartOfName(String name) {
-        List<Book> books = repository.findBookByNameStartingWith(name);
+        List<Book> books = bookRepository.findBookByNameStartingWith(name);
         return books.stream().map(mapper::fromEntity).collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public List<BookRepresentation> getBooksByGenreName(List<String> genres) {
+        List<BookRepresentation> bookRepresentations = new ArrayList<>();
+        for (String  s : genres) {
+            bookRepresentations.add(mapper.fromEntity(bookRepository.findAllByGenre(s)));
+        }
+        return bookRepresentations;
+//        bookRepository.findAllByGenre(genres).stream().map(mapper::fromEntity).toList();
     }
 }

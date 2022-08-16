@@ -17,14 +17,14 @@ import java.util.List;
 @RequestMapping("/api/book")
 public class BookController {
 
-    private final BookService service;
+    private final BookService bookService;
 
     private final UserRepository repository;
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BookRepresentation> getBookById(@PathVariable Long id) {
-        BookRepresentation bookById = service.getBookById(id);
+        BookRepresentation bookById = bookService.getBookById(id);
         return ResponseEntity.ok(bookById);
     }
 
@@ -32,43 +32,48 @@ public class BookController {
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<BookRepresentation>> getAllBook() {
-        List<BookRepresentation> list = service.getAllBook();
+        List<BookRepresentation> list = bookService.getAllBook();
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("/name/{name}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<BookRepresentation>> getBookByName(@PathVariable String name) {
-        List<BookRepresentation> list = service.getBookByName(name);
+        List<BookRepresentation> list = bookService.getBookByName(name);
         return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/genres")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public List<BookRepresentation> getBookByGenres(@RequestBody List<String> genres) {
+        return bookService.getBooksByGenreName(genres);
     }
 
     @GetMapping("/partname/{name}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<BookRepresentation>> getBookByPartOfName(@PathVariable String name) {
-        List<BookRepresentation> list = service.getBookByPartOfName(name);
+        List<BookRepresentation> list = bookService.getBookByPartOfName(name);
         return ResponseEntity.ok(list);
     }
 
     @PostMapping("/save")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Long> saveBook(@RequestBody BookRequest dto) {
-        long id = service.saveBook(dto);
+        long id = bookService.saveBook(dto);
         return ResponseEntity.ok(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> updateBook(@PathVariable Long id, @RequestBody BookRequest dto) {
-        service.updateBook(dto, id);
+        bookService.updateBook(dto, id);
         return ResponseEntity.ok("Success");
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Long> deleteBook(@PathVariable Long id) {
-        Long count = service.delete(id);
+        Long count = bookService.delete(id);
         return ResponseEntity.ok(count);
     }
-
 }

@@ -1,6 +1,5 @@
 package com.halyk.bookstore.data.repository;
 
-import com.halyk.bookstore.data.entity.Book;
 import com.halyk.bookstore.data.entity.Genre;
 import com.halyk.bookstore.exception.EntityNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +14,7 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
     }
 
     List<Genre> findGenreByGenreName(String genreName);
+    List<Genre> findByIdIn(List<Long> ids);
 
     Long deleteGenreById(Long id);
 

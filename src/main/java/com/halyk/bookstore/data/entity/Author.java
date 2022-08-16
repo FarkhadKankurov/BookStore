@@ -45,7 +45,7 @@ public class Author {
             }
     )
     @JoinTable(
-            name = "Author_Book",
+            name = "Author_Genre",
             joinColumns = @JoinColumn(name = "author_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )

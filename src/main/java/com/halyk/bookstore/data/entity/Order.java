@@ -1,7 +1,6 @@
 package com.halyk.bookstore.data.entity;
 
 
-import com.halyk.bookstore.data.entity.user.User;
 import com.halyk.bookstore.data.enums.OrderStatusEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;

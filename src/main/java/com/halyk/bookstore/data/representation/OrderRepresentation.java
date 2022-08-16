@@ -1,6 +1,6 @@
 package com.halyk.bookstore.data.representation;
 
-import com.halyk.bookstore.data.representation.forOrder.ForOrderRepresentationBook;
+import com.halyk.bookstore.data.representation.for_order.ForOrderRepresentationBook;
 import lombok.Data;
 
 import java.time.OffsetDateTime;

@@ -1,4 +1,4 @@
-package com.halyk.bookstore.data.representation.forOrder;
+package com.halyk.bookstore.data.representation.for_order;
 
 import lombok.Data;
 
