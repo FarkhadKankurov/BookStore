@@ -19,4 +19,6 @@ public interface BookService {
     List<BookRepresentation> getAllBook();
 
     List<BookRepresentation> getBookByName(String name);
+
+    List<BookRepresentation> getBookByPartOfName(String name);
 }

@@ -70,6 +70,5 @@ public class Book {
     private List<Genre> genres = new ArrayList<>();
 
 
-
 }
 

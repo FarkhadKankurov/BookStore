@@ -65,4 +65,11 @@ public class BookServiceImpl implements BookService {
         List<Book> allBook = repository.findBookByName(name);
         return allBook.stream().map(mapper::fromEntity).collect(Collectors.toList());
     }
+
+    @Transactional
+    @Override
+    public List<BookRepresentation> getBookByPartOfName(String name) {
+        List<Book> books = repository.findBookByNameStartingWith(name);
+        return books.stream().map(mapper::fromEntity).collect(Collectors.toList());
+    }
 }

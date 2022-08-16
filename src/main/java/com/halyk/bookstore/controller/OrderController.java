@@ -21,42 +21,42 @@ public class OrderController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<OrderRepresentation> getOrderById(@PathVariable Long id){
+    public ResponseEntity<OrderRepresentation> getOrderById(@PathVariable Long id) {
         OrderRepresentation dto = service.getOrderById(id);
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<OrderRepresentation>> getAllOrder(){
+    public ResponseEntity<List<OrderRepresentation>> getAllOrder() {
         List<OrderRepresentation> list = service.getAllOrder();
         return ResponseEntity.ok(list);
     }
 
     @PostMapping("/save")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Long> saveOrder(@RequestBody OrderRequest dto){
+    public ResponseEntity<Long> saveOrder(@RequestBody OrderRequest dto) {
         long id = service.saveOrder(dto);
         return ResponseEntity.ok(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<String> updateOrder(@PathVariable Long id, @RequestBody OrderRequest dto){
+    public ResponseEntity<String> updateOrder(@PathVariable Long id, @RequestBody OrderRequest dto) {
         service.updateOrder(dto, id);
         return ResponseEntity.ok("Success");
     }
 
     @PutMapping("/changeStatus/{id}/{status}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> changeOrderStatus(@PathVariable Long id, @PathVariable OrderStatusEnum status){
+    public ResponseEntity<String> changeOrderStatus(@PathVariable Long id, @PathVariable OrderStatusEnum status) {
         service.updateOrderStatus(id, status);
         return ResponseEntity.ok("Success");
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Long> deleteOrder(@PathVariable Long id){
+    public ResponseEntity<Long> deleteOrder(@PathVariable Long id) {
         Long count = service.delete(id);
         return ResponseEntity.ok(count);
     }

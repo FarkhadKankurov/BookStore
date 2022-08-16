@@ -8,27 +8,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ProjectExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException exception){
+    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException exception) {
         return new ResponseEntity<String>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(BookReservedAnotherOrder.class)
-    public ResponseEntity<String> handleBookReservedAnotherOrder(BookReservedAnotherOrder exception){
+    @ExceptionHandler(BookReservedAnotherOrderOrAbsent.class)
+    public ResponseEntity<String> handleBookReservedAnotherOrder(BookReservedAnotherOrderOrAbsent exception) {
         return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ExceedTotalCost.class)
-    public ResponseEntity<String> handleExceedTotalCost(ExceedTotalCost exception){
+    public ResponseEntity<String> handleExceedTotalCost(ExceedTotalCost exception) {
         return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(OrderStatusNotCorrect.class)
-    public ResponseEntity<String> handleOrderStatusNotCorrect(OrderStatusNotCorrect exception){
+    public ResponseEntity<String> handleOrderStatusNotCorrect(OrderStatusNotCorrect exception) {
         return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(IncorrectlyID.class)
-    public ResponseEntity<String> handleIncorrectlyID(IncorrectlyID exception){
+    public ResponseEntity<String> handleIncorrectlyID(IncorrectlyID exception) {
         return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

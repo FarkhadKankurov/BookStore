@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-    default Book findByIdOrThrowException(Long id){
-        return findById(id).orElseThrow(()->new EntityNotFoundException("Entity with id = " + id + " not found"));
+    default Book findByIdOrThrowException(Long id) {
+        return findById(id).orElseThrow(() -> new EntityNotFoundException("Entity with id = " + id + " not found"));
     }
 
     Long deleteBookById(Long id);
@@ -22,7 +22,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     void deleteBooksByIdIn(List<Long> booksIDInEntity);
 
 
-//    List<Book> findBookByNameLike(String namePart); //todo попробовать сделать через этот метод или сделать через аннотацию query (это про поиск по части слова)
+    List<Book> findBookByNameStartingWith(String namePart); //todo попробовать сделать через этот метод или сделать через аннотацию query (это про поиск по части слова)
 
     //todo добавить Representation для других
 }

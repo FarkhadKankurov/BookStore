@@ -1,11 +1,8 @@
 package com.halyk.bookstore.data.representation;
 
-import com.halyk.bookstore.data.request.BookRequest;
-import com.halyk.bookstore.data.request.GenreRequest;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 public class AuthorRepresentation {

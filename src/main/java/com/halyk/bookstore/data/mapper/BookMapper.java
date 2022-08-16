@@ -12,7 +12,7 @@ import org.mapstruct.NullValueCheckStrategy;
 public interface BookMapper {
     @Mapping(target = "publisher.id", source = "publisherId")
     Book toEntity(BookRequest dto);
-//    @Mapping(target = "publisherId", source = "publisher.id")
+
     BookRepresentation fromEntity(Book book);
 
     @Mapping(target = "publisher.id", source = "publisherId")

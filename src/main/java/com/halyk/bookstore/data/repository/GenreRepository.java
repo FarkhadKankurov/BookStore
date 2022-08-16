@@ -10,8 +10,8 @@ import java.util.List;
 
 @Repository
 public interface GenreRepository extends JpaRepository<Genre, Long> {
-    default Genre findByIdOrThrowException(Long id){
-        return findById(id).orElseThrow(()->new EntityNotFoundException("Entity with id = " + id + " not found"));
+    default Genre findByIdOrThrowException(Long id) {
+        return findById(id).orElseThrow(() -> new EntityNotFoundException("Entity with id = " + id + " not found"));
     }
 
     List<Genre> findGenreByGenreName(String genreName);

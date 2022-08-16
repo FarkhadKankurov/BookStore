@@ -1,6 +1,5 @@
 package com.halyk.bookstore.data.enums;
 
-import lombok.Data;
 import lombok.Getter;
 
 @Getter

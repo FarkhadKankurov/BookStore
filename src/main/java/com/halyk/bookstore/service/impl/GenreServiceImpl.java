@@ -1,6 +1,5 @@
 package com.halyk.bookstore.service.impl;
 
-import com.halyk.bookstore.data.entity.Book;
 import com.halyk.bookstore.data.representation.GenreRepresentation;
 import com.halyk.bookstore.data.request.GenreRequest;
 import com.halyk.bookstore.data.entity.Genre;

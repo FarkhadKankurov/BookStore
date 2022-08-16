@@ -19,4 +19,5 @@ public interface PublisherService {
 
     Long delete(Long id);
 
+    List<PublisherRepresentation> getAuthorByPartName(String name);
 }

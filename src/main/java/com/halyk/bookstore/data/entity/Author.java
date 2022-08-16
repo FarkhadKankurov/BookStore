@@ -17,7 +17,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class Author {
- 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -36,7 +36,7 @@ public class Author {
     private LocalDate dateOfBirth;
 
     @ManyToMany
-    private List<Book> books =  new ArrayList<>();
+    private List<Book> books = new ArrayList<>();
 
     @ManyToMany(
             cascade = {

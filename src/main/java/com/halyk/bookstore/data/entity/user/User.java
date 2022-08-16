@@ -1,7 +1,6 @@
 package com.halyk.bookstore.data.entity.user;
 
 
-import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,10 +28,10 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column (name = "role")
+    @Column(name = "role")
     private String role;
 
-    @Column (name = "is_blocked")
+    @Column(name = "is_blocked")
     private Boolean isBlocked;
 
 }

@@ -10,6 +10,7 @@ import org.mapstruct.NullValueCheckStrategy;
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface PublisherMapper {
     Publisher toEntity(PublisherRequest publisherDto);
+
     PublisherRepresentation fromEntity(Publisher publisher);
 
     void updateEntity(@MappingTarget Publisher publisher, PublisherRequest publisherDto);

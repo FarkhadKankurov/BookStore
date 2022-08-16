@@ -8,12 +8,11 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
 
 
-
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface AuthorMapper {
     Author toEntity(AuthorRequest dto);
+
     AuthorRepresentation fromEntity(Author author);
 
     void updateEntity(@MappingTarget Author author, AuthorRequest dto);
-//    List<AuthorRepresentation> fromEntityList(List<Author> authorList); //todo додедлать правильно
 }

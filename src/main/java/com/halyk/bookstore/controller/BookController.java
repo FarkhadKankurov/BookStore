@@ -23,7 +23,7 @@ public class BookController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<BookRepresentation> getBookById(@PathVariable Long id){
+    public ResponseEntity<BookRepresentation> getBookById(@PathVariable Long id) {
         BookRepresentation bookById = service.getBookById(id);
         return ResponseEntity.ok(bookById);
     }
@@ -31,35 +31,42 @@ public class BookController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<List<BookRepresentation>> getAllBook(){
+    public ResponseEntity<List<BookRepresentation>> getAllBook() {
         List<BookRepresentation> list = service.getAllBook();
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("/name/{name}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<List<BookRepresentation>> getBookByName(@PathVariable String name){
+    public ResponseEntity<List<BookRepresentation>> getBookByName(@PathVariable String name) {
         List<BookRepresentation> list = service.getBookByName(name);
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/partname/{name}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<BookRepresentation>> getBookByPartOfName(@PathVariable String name) {
+        List<BookRepresentation> list = service.getBookByPartOfName(name);
         return ResponseEntity.ok(list);
     }
 
     @PostMapping("/save")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Long> saveBook(@RequestBody BookRequest dto){
+    public ResponseEntity<Long> saveBook(@RequestBody BookRequest dto) {
         long id = service.saveBook(dto);
         return ResponseEntity.ok(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> updateBook(@PathVariable Long id, @RequestBody BookRequest dto){
+    public ResponseEntity<String> updateBook(@PathVariable Long id, @RequestBody BookRequest dto) {
         service.updateBook(dto, id);
         return ResponseEntity.ok("Success");
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Long> deleteBook(@PathVariable Long id){
+    public ResponseEntity<Long> deleteBook(@PathVariable Long id) {
         Long count = service.delete(id);
         return ResponseEntity.ok(count);
     }

@@ -10,10 +10,7 @@ import com.halyk.bookstore.data.request.OrderRequest;
 import com.halyk.bookstore.data.entity.Order;
 import com.halyk.bookstore.data.mapper.OrderMapper;
 import com.halyk.bookstore.data.repository.OrderRepository;
-import com.halyk.bookstore.exception.BookReservedAnotherOrder;
-import com.halyk.bookstore.exception.ExceedTotalCost;
-import com.halyk.bookstore.exception.IncorrectlyID;
-import com.halyk.bookstore.exception.OrderStatusNotCorrect;
+import com.halyk.bookstore.exception.*;
 import com.halyk.bookstore.service.OrderService;
 import lombok.Data;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,8 +38,6 @@ public class OrderServiceImpl implements OrderService {
 
     private final UserRepository userRepository;
 
-//    private final SecurityContextHolder
-
 
     @Transactional
     @Override
@@ -61,12 +56,28 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public long saveOrder(OrderRequest dto) {
+        List<String> exists = new ArrayList<>();
+        List<Long> booksCheckReservedOrAbsence = dto.getList();
+        for (Long id : booksCheckReservedOrAbsence) {
+            try {
+                bookRepository.findByIdOrThrowException(id);                //проверяем на наличие
+            } catch (Exception e) {
+                exists.add(String.valueOf(id));
+            }
+        }
+        if (!exists.isEmpty()) {
+            String collect = String.join(", ", exists);
+            throw new BookReservedAnotherOrderOrAbsent("Книги под id: " + collect + ", нет в наличии");
+        }
+
         Order order = new Order();
         order.setStatus(OrderStatusEnum.CREATED);
         order.setUserID(getUserIDFromContext());
         Order save = orderRepository.save(order);
 
+        //проверяем на сумму и зарезервированная ли
         List<Book> books = checkTotalSumAndReservedBook(dto.getList(), save);
+
         bookRepository.saveAll(books);
         return save.getId();
     }
@@ -74,9 +85,19 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public void updateOrder(OrderRequest dto, Long id) {
-
-
-
+        List<String> absent = new ArrayList<>();
+        List<Long> booksCheckReservedOrAbsence = dto.getList();
+        for (Long idI : booksCheckReservedOrAbsence) {
+            try {
+                bookRepository.findByIdOrThrowException(idI);                //проверяем на наличие
+            } catch (Exception e) {
+                absent.add(String.valueOf(idI));
+            }
+        }
+        if (!absent.isEmpty()) {
+            String collect = String.join(", ", absent);
+            throw new BookReservedAnotherOrderOrAbsent("Книги под id: " + collect + ", нет в наличии");
+        }
 
         int totalSum = 0;
         List<String> exists = new ArrayList<>();
@@ -86,10 +107,10 @@ public class OrderServiceImpl implements OrderService {
         User user = null;
         if (principal instanceof UserDetails) {
             String username = ((UserDetails) principal).getUsername();
-            user = userRepository.findUserByUsername(username);     // из контекста получаем роль
+            user = userRepository.findUserByUsername(username);     //получаем роль
         }
-        if (!Objects.equals(user,null)) {
-            if(!Objects.equals(getUserIDFromContext(), order.getUserID()) ) {
+        if (!Objects.equals(user, null)) {
+            if (!Objects.equals(getUserIDFromContext(), order.getUserID())) {
                 throw new IncorrectlyID("Текущий пользователь не соответствует пользователю создавшему заказ");
             }
         }
@@ -116,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
         }
         if (!exists.isEmpty()) {
             String collect = String.join(", ", exists);
-            throw new BookReservedAnotherOrder("Книги: " + collect + ", зарезервированы в другом заказе");
+            throw new BookReservedAnotherOrderOrAbsent("Книги: " + collect + ", зарезервированы в другом заказе");
         }
 
         deleteOrderFromBooks(booksDelete);
@@ -194,17 +215,18 @@ public class OrderServiceImpl implements OrderService {
         }
         if (!exists.isEmpty()) {
             String collect = String.join(", ", exists);
-            throw new BookReservedAnotherOrder("Книги: " + collect + ", зарезервированы в другом заказе");
+            throw new BookReservedAnotherOrderOrAbsent("Книги: " + collect + ", зарезервированы в другом заказе");
         }
         return (books);
     }
+
     private Long getUserIDFromContext() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user;
         Long userId = null;
         if (principal instanceof UserDetails) {
             String username = ((UserDetails) principal).getUsername();
-            user = userRepository.findUserByUsername(username);     // из контекста получаем userID
+            user = userRepository.findUserByUsername(username);     //получаем userID
             userId = user.getId();
         }
         return userId;

@@ -23,7 +23,7 @@ public class PublisherServiceImpl implements PublisherService {
 
     @Transactional
     @Override
-    public PublisherRepresentation getPublisherById(Long id){
+    public PublisherRepresentation getPublisherById(Long id) {
         Publisher publisher = repository.findByIdOrThrowException(id);
         return mapper.fromEntity(publisher);
     }
@@ -62,6 +62,13 @@ public class PublisherServiceImpl implements PublisherService {
     @Override
     public Long delete(Long id) {
         return repository.deletePublisherById(id);
+    }
+
+    @Transactional
+    @Override
+    public List<PublisherRepresentation> getAuthorByPartName(String name) {
+        List<Publisher> publishers = repository.findPublisherByNameStartingWith(name);
+        return publishers.stream().map(mapper::fromEntity).collect(Collectors.toList());
     }
 
 

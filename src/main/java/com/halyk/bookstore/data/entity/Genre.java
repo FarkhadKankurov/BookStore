@@ -32,5 +32,4 @@ public class Genre {
     private List<Author> authors = new ArrayList<>();
 
 
-
 }

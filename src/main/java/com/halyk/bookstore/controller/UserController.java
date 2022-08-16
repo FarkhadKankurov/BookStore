@@ -29,7 +29,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/api/user/{id}")
-    public Optional<User> getUser(@PathVariable Long id){
+    public Optional<User> getUser(@PathVariable Long id) {
         return userRepository.findById(id);
     }
 
@@ -71,7 +71,7 @@ public class UserController {
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @PutMapping("api/{id}")
-    public String updateUser(@PathVariable Long id, @RequestBody User user){
+    public String updateUser(@PathVariable Long id, @RequestBody User user) {
         userService.updateUser(id, user);
         return "Success";
     }
@@ -79,7 +79,7 @@ public class UserController {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("api/{id}")
-    public String deleteUser(@PathVariable Long id){
+    public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "Success";
     }

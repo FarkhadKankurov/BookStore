@@ -1,13 +1,11 @@
 package com.halyk.bookstore.service.impl;
 
-import com.halyk.bookstore.data.entity.Book;
 import com.halyk.bookstore.data.repository.BookRepository;
 import com.halyk.bookstore.data.representation.AuthorRepresentation;
 import com.halyk.bookstore.data.request.AuthorRequest;
 import com.halyk.bookstore.data.entity.Author;
 import com.halyk.bookstore.data.mapper.AuthorMapper;
 import com.halyk.bookstore.data.repository.AuthorRepository;
-import com.halyk.bookstore.data.request.BookRequest;
 import com.halyk.bookstore.service.AuthorService;
 import lombok.Data;
 import org.springframework.stereotype.Service;
@@ -26,8 +24,6 @@ import java.util.Map;
 
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-
 
 
 @Service
@@ -67,8 +63,7 @@ public class AuthorServiceImpl implements AuthorService {
         criteria.where(predicates);
         return criteria;
     }
-//
-////    @Override
+
     public List<Author> allByTerms(AuthorRequest dto) {
         CriteriaQuery<Author> criteria = buildCriteria(dto);
         TypedQuery<Author> query = em.createQuery(criteria);
@@ -96,7 +91,6 @@ public class AuthorServiceImpl implements AuthorService {
         Author save = authorRepository.save(author);
         return save.getId();
     }
-
 
     @Transactional
     @Override
@@ -129,6 +123,4 @@ public class AuthorServiceImpl implements AuthorService {
         mapper.updateEntity(author, dto);
         authorRepository.save(author);
     }
-
-
 }
