@@ -1,6 +1,6 @@
 package com.halyk.bookstore.data.request;
 
-import com.halyk.bookstore.data.entity.Book;
+
 import lombok.Data;
 
 import java.util.List;

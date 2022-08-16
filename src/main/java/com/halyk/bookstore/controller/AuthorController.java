@@ -2,7 +2,6 @@ package com.halyk.bookstore.controller;
 
 import com.halyk.bookstore.data.representation.AuthorRepresentation;
 import com.halyk.bookstore.data.request.AuthorRequest;
-import com.halyk.bookstore.data.request.BookRequest;
 import com.halyk.bookstore.service.AuthorService;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;

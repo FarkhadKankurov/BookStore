@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS Orders
 (
     id INTEGER COMMENT 'Уникальный идентификатор заказа' PRIMARY KEY AUTO_INCREMENT,
     status VARCHAR(50) NOT NULL COMMENT 'Статус заказа',
+    user_id INTEGER NOT NULL COMMENT 'Уникальный идентификатор пользователя',
     create_dt TIMESTAMP NOT NULL COMMENT 'Время заказа'
 );
 

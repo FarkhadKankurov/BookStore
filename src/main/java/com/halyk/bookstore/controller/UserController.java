@@ -15,13 +15,13 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @RestController
-public class RegistrationController {
+public class UserController {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     private final UserDetailsServiceImpl userService;
 
     @Autowired
-    public RegistrationController(UserRepository userRepository, PasswordEncoder encoder, UserDetailsServiceImpl userService) {
+    public UserController(UserRepository userRepository, PasswordEncoder encoder, UserDetailsServiceImpl userService) {
         this.userRepository = userRepository;
         this.encoder = encoder;
         this.userService = userService;

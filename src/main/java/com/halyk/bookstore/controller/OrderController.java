@@ -33,7 +33,7 @@ public class OrderController {
         return ResponseEntity.ok(list);
     }
 
-    @PostMapping("/order")
+    @PostMapping("/save")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Long> saveOrder(@RequestBody OrderRequest dto){
         long id = service.saveOrder(dto);
@@ -41,7 +41,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<String> updateOrder(@PathVariable Long id, @RequestBody OrderRequest dto){
         service.updateOrder(dto, id);
         return ResponseEntity.ok("Success");
