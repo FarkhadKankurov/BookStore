@@ -6,7 +6,8 @@ import com.halyk.bookstore.data.mapper.BookMapper;
 import com.halyk.bookstore.data.repository.BookRepository;
 import com.halyk.bookstore.data.representation.BookRepresentation;
 import com.halyk.bookstore.service.BookService;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,19 +16,52 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Data
+@Getter
+@Setter
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
 
     private final BookMapper mapper;
 
-    @Transactional
+    public BookServiceImpl(BookRepository bookRepository, BookMapper mapper) {
+        this.bookRepository = bookRepository;
+        this.mapper = mapper;
+    }
+
     @Override
     public BookRepresentation getBookById(Long id) {
         Book book = bookRepository.findByIdOrThrowException(id);
         return mapper.fromEntity(book);
 
+    }
+
+    @Override
+    public List<BookRepresentation> getAllBook() {
+        List<Book> allBook = bookRepository.findAll();
+        return allBook.stream().map(mapper::fromEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookRepresentation> getBookByName(String name) {
+        List<Book> allBook = bookRepository.findBookByName(name);
+        return allBook.stream().map(mapper::fromEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookRepresentation> getBookByPartOfName(String name) {
+        List<Book> books = bookRepository.findBookByNameStartingWith(name);
+        return books.stream().map(mapper::fromEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookRepresentation> getBooksByGenreName(List<String> genres) {
+        List<BookRepresentation> bookRepresentations = new ArrayList<>();
+        for (String  s : genres) {
+            bookRepresentations.add(mapper.fromEntity(bookRepository.findAllByGenre(s)));
+        }
+        return bookRepresentations;
+//        bookRepository.findAllByGenre(genres).stream().map(mapper::fromEntity).toList();
     }
 
     @Transactional
@@ -52,35 +86,4 @@ public class BookServiceImpl implements BookService {
         return bookRepository.deleteBookById(id);
     }
 
-    @Transactional
-    @Override
-    public List<BookRepresentation> getAllBook() {
-        List<Book> allBook = bookRepository.findAll();
-        return allBook.stream().map(mapper::fromEntity).collect(Collectors.toList());
-    }
-
-    @Transactional
-    @Override
-    public List<BookRepresentation> getBookByName(String name) {
-        List<Book> allBook = bookRepository.findBookByName(name);
-        return allBook.stream().map(mapper::fromEntity).collect(Collectors.toList());
-    }
-
-    @Transactional
-    @Override
-    public List<BookRepresentation> getBookByPartOfName(String name) {
-        List<Book> books = bookRepository.findBookByNameStartingWith(name);
-        return books.stream().map(mapper::fromEntity).collect(Collectors.toList());
-    }
-
-    @Transactional
-    @Override
-    public List<BookRepresentation> getBooksByGenreName(List<String> genres) {
-        List<BookRepresentation> bookRepresentations = new ArrayList<>();
-        for (String  s : genres) {
-            bookRepresentations.add(mapper.fromEntity(bookRepository.findAllByGenre(s)));
-        }
-        return bookRepresentations;
-//        bookRepository.findAllByGenre(genres).stream().map(mapper::fromEntity).toList();
-    }
 }

@@ -9,7 +9,8 @@ import com.halyk.bookstore.data.entity.Author;
 import com.halyk.bookstore.data.mapper.AuthorMapper;
 import com.halyk.bookstore.data.repository.AuthorRepository;
 import com.halyk.bookstore.service.AuthorService;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -26,7 +27,8 @@ import java.util.stream.Collectors;
 
 
 @Service
-@Data
+@Getter
+@Setter
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
@@ -38,6 +40,14 @@ public class AuthorServiceImpl implements AuthorService {
     private CriteriaBuilder builder;
     private Map<String, Supplier<?>> map;
     private final EntityManager em;
+
+    public AuthorServiceImpl(AuthorRepository authorRepository, BookRepository bookRepository, GenreRepository genreRepository, AuthorMapper mapper, EntityManager em) {
+        this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
+        this.genreRepository = genreRepository;
+        this.mapper = mapper;
+        this.em = em;
+    }
 
 
     private void initMap(AuthorRequest dto) {
@@ -70,29 +80,18 @@ public class AuthorServiceImpl implements AuthorService {
         return query.getResultList();
     }
 
-    @Transactional
     @Override
     public AuthorRepresentation getAuthorById(Long id) {
         Author author = authorRepository.findByIdOrThrowException(id);
         return mapper.fromEntity(author);
     }
 
-    @Transactional
     @Override
     public List<AuthorRepresentation> getAllAuthor() {
         List<Author> list = authorRepository.findAll();
         return list.stream().map(mapper::fromEntity).collect(Collectors.toList());
     }
 
-    @Transactional
-    @Override
-    public Long saveAuthor(AuthorRequest dto) {
-        Author author = mapper.toEntity(dto);
-        Author save = authorRepository.save(author);
-        return save.getId();
-    }
-
-    @Transactional
     @Override
     public List<AuthorRepresentation> getAuthorByName(AuthorRequest dto) {
         List<Author> list = allByTerms(dto);
@@ -101,6 +100,19 @@ public class AuthorServiceImpl implements AuthorService {
             result.add(mapper.fromEntity(author));
         }
         return result;
+    }
+
+    @Override
+    public List<AuthorRepresentationForGenreName> findAuthorsByGenreList(List<String> genreList) {
+        return authorRepository.getAuthorByGenreList(genreList).stream().map(mapper::fromEntityGenre).toList();
+    }
+
+    @Transactional
+    @Override
+    public Long saveAuthor(AuthorRequest dto) {
+        Author author = mapper.toEntity(dto);
+        Author save = authorRepository.save(author);
+        return save.getId();
     }
 
     @Transactional
@@ -118,9 +130,5 @@ public class AuthorServiceImpl implements AuthorService {
         authorRepository.save(author);
     }
 
-    @Override
-    public List<AuthorRepresentationForGenreName> findAuthorsByGenreList(List<String> genreList) {
-        return authorRepository.getAuthorByGenreList(genreList).stream().map(mapper::fromEntityGenre).toList();
-    }
 }
  

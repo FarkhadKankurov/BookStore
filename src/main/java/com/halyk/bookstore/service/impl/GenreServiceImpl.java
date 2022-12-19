@@ -6,7 +6,8 @@ import com.halyk.bookstore.data.entity.Genre;
 import com.halyk.bookstore.data.mapper.GenreMapper;
 import com.halyk.bookstore.data.repository.GenreRepository;
 import com.halyk.bookstore.service.GenreService;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,28 +15,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Data
+@Getter
+@Setter
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository repository;
 
     private final GenreMapper mapper;
 
-    @Transactional
+    public GenreServiceImpl(GenreRepository repository, GenreMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
+
     @Override
     public GenreRepresentation getGenreById(Long id) {
         Genre genre = repository.findByIdOrThrowException(id);
         return mapper.fromEntity(genre);
     }
 
-    @Transactional
     @Override
     public List<GenreRepresentation> getAllGenre() {
         List<Genre> allGenre = repository.findAll();
         return allGenre.stream().map(mapper::fromEntity).collect(Collectors.toList());
     }
 
-    @Transactional
     @Override
     public List<GenreRepresentation> getGenreByName(String name) {
         List<Genre> allGenre = repository.findGenreByGenreName(name);

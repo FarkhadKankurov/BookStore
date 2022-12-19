@@ -13,6 +13,8 @@ import com.halyk.bookstore.data.repository.OrderRepository;
 import com.halyk.bookstore.exception.*;
 import com.halyk.bookstore.service.OrderService;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,6 @@ public class OrderServiceImpl implements OrderService {
         return mapper.fromEntity(order);
     }
 
-    @Transactional
     @Override
     public List<OrderRepresentation> getAllOrder() {
         List<Order> allOrder = orderRepository.findAll();

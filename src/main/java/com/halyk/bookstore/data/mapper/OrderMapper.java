@@ -10,6 +10,7 @@ import org.mapstruct.NullValueCheckStrategy;
 
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface OrderMapper {
+
     Order toEntity(OrderRequest dto);
 
     OrderRepresentation fromEntity(Order order);
