@@ -12,9 +12,6 @@ import com.halyk.bookstore.data.mapper.OrderMapper;
 import com.halyk.bookstore.data.repository.OrderRepository;
 import com.halyk.bookstore.exception.*;
 import com.halyk.bookstore.service.OrderService;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -29,7 +26,7 @@ import java.util.stream.Collectors;
 import static com.halyk.bookstore.data.enums.OrderStatusEnum.*;
 
 @Service
-@Data
+
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -40,8 +37,13 @@ public class OrderServiceImpl implements OrderService {
 
     private final UserRepository userRepository;
 
+    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper mapper, BookRepository bookRepository, UserRepository userRepository) {
+        this.orderRepository = orderRepository;
+        this.mapper = mapper;
+        this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
+    }
 
-    @Transactional
     @Override
     public OrderRepresentation getOrderById(Long id) {
         Order order = orderRepository.findByIdOrThrowException(id);
@@ -115,7 +117,6 @@ public class OrderServiceImpl implements OrderService {
                 throw new IncorrectlyID("Текущий пользователь не соответствует пользователю создавшему заказ");
             }
         }
-
 
         List<Long> booksIDInEntity = order.getBooks().stream().map(Book::getId).toList();
         List<Long> booksIDInRequest = dto.getList();
